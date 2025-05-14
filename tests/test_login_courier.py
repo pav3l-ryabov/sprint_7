@@ -1,5 +1,6 @@
 import allure
 
+from data import EXPECTED_NOT_ENOUGH_CREDS, EXPECTED_ACC_NOT_FOUND
 from methods.courier_methods import CourierMethods
 from conftest import create_courier_and_delete
 
@@ -26,7 +27,8 @@ class TestLoginCourier:
         payload = {"login": login, "password": None}
         response, status = CourierMethods().login_courier(payload)
         assert status == 400, f'Ожидали 400, получили {status}'
-        assert response.json() == {"message":  "Недостаточно данных для входа"}, f'Ожидали сообщение "Недостаточно данных для входа", а получили {response.json}'
+        assert response.json() == EXPECTED_NOT_ENOUGH_CREDS, \
+            f'Ожидали сообщение {EXPECTED_NOT_ENOUGH_CREDS}, а получили {response.json}'
 
     @allure.title('Тест авторизации существующего курьера с неправильным паролем')
     # тест, который проверит:
@@ -36,7 +38,8 @@ class TestLoginCourier:
         payload = {"login": login, "password": 'invalid_pass'}
         response, status = CourierMethods().login_courier(payload)
         assert status == 404, f'Ожидали 404, получили {status}'
-        assert response.json() == {"message": "Учетная запись не найдена"}, f'Ожидали сообщение "Учетная запись не найдена", а получили {response.json}'
+        assert response.json() == EXPECTED_ACC_NOT_FOUND, \
+            f'Ожидали сообщение {EXPECTED_ACC_NOT_FOUND}, а получили {response.json}'
 
     @allure.title('Тест авторизации курьера с несуществующим логином')
     # тест, который проверит:
@@ -46,7 +49,8 @@ class TestLoginCourier:
         payload = {"login": 'invalid_login', "password": password}
         response, status = CourierMethods().login_courier(payload)
         assert status == 404, f'Ожидали 404, получили {status}'
-        assert response.json() == {"message": "Учетная запись не найдена"}, f'Ожидали сообщение "Учетная запись не найдена", а получили {response.json}'
+        assert response.json() == EXPECTED_ACC_NOT_FOUND, \
+            f'Ожидали сообщение {EXPECTED_ACC_NOT_FOUND}, а получили {response.json}'
 
 # Проверь:
 # курьер может авторизоваться; done
